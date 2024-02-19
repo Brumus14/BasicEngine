@@ -1,0 +1,59 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-I./lib/bx/include",
+      "-I./lib/bimg/include",
+      "-I./lib/bgfx/include",
+      "-I./src",
+      "-DBX_CONFIG_DEBUG=1",
+      "-I",
+      "/usr/include",
+      "-o",
+      "tes",
+      "src/Renderer/Renderer.cpp"
+    ],
+    "directory": "/home/brumus/Documents/Code/C++/BGFX/Testing",
+    "file": "/home/brumus/Documents/Code/C++/BGFX/Testing/src/Renderer/Renderer.cpp",
+    "output": "/home/brumus/Documents/Code/C++/BGFX/Testing/tes"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-I./lib/bx/include",
+      "-I./lib/bimg/include",
+      "-I./lib/bgfx/include",
+      "-I./src",
+      "-DBX_CONFIG_DEBUG=1",
+      "-I",
+      "/usr/include",
+      "-o",
+      "tes",
+      "src/Main.cpp"
+    ],
+    "directory": "/home/brumus/Documents/Code/C++/BGFX/Testing",
+    "file": "/home/brumus/Documents/Code/C++/BGFX/Testing/src/Main.cpp",
+    "output": "/home/brumus/Documents/Code/C++/BGFX/Testing/tes"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-I./lib/bx/include",
+      "-I./lib/bimg/include",
+      "-I./lib/bgfx/include",
+      "-I./src",
+      "-DBX_CONFIG_DEBUG=1",
+      "-I",
+      "/usr/include",
+      "-o",
+      "tes",
+      "src/Window/Window.cpp"
+    ],
+    "directory": "/home/brumus/Documents/Code/C++/BGFX/Testing",
+    "file": "/home/brumus/Documents/Code/C++/BGFX/Testing/src/Window/Window.cpp",
+    "output": "/home/brumus/Documents/Code/C++/BGFX/Testing/tes"
+  }
+]

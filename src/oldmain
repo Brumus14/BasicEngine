@@ -1,0 +1,162 @@
+#define GLM_ENABLE_EXPERIMENTAL
+#define GLFW_EXPOSE_NATIVE_X11
+
+#include <GLFW/glfw3.h>
+#include <GLFW/glfw3native.h>
+#include <bgfx/bgfx.h>
+#include <bx/math.h>
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
+#include <glm/gtx/string_cast.hpp>
+#include <iostream>
+#include <fstream>
+
+const unsigned int width = 800;
+const unsigned int height = 600;
+
+bool debugText = true;
+bool debugWireframe = false;
+
+GLFWwindow * window = nullptr;
+
+void KeyCallback(GLFWwindow * window, int key, int scancode, int action, int mods);
+
+int main (int argc, char * argv[]) {
+  glfwInit();
+  glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+
+  window = glfwCreateWindow(width, height, "bgfx!", nullptr, nullptr);
+
+  glfwSetKeyCallback(window, KeyCallback);
+
+  bgfx::Init bgfxInit;
+  bgfxInit.platformData.ndt = glfwGetX11Display();
+  bgfxInit.platformData.nwh = (void*)(uintptr_t)glfwGetX11Window(window);
+  bgfxInit.resolution.width = width;
+  bgfxInit.resolution.height = height;
+  bgfxInit.resolution.reset = BGFX_RESET_VSYNC;
+  bgfxInit.type = bgfx::RendererType::OpenGL;
+  bgfx::init(bgfxInit);
+
+  bgfx::ViewId clearView = 0;
+  bgfx::setViewClear(clearView, BGFX_CLEAR_COLOR);
+  bgfx::setViewRect(0, 0, 0, width, height);
+
+  int frameNumber = 0;
+
+  bgfx::setDebug(BGFX_DEBUG_TEXT);
+
+  bgfx::VertexLayout vertexLayout;
+  vertexLayout.begin().add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float).add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true).end();
+
+  std::ifstream is;
+
+  is.open("/home/brumus/Documents/Code/C++/BGFX/Testing/res/shaders/vs_basic.bin", std::ios::binary);
+
+  is.seekg(0, std::ios::end);
+  std::streampos vFileSize = is.tellg();
+  is.seekg(0, std::ios::beg);
+
+  char * vertex = new char[vFileSize];
+  is.read(vertex, vFileSize);
+
+  is.close();
+
+  is.open("/home/brumus/Documents/Code/C++/BGFX/Testing/res/shaders/fs_basic.bin", std::ios::binary);
+
+  is.seekg(0, std::ios::end);
+  std::streampos fFileSize = is.tellg();
+  is.seekg(0, std::ios::beg);
+
+  char * fragment = new char[fFileSize];
+  is.read(fragment, fFileSize);
+
+  is.close();
+
+  bgfx::ShaderHandle vert = bgfx::createShader(bgfx::makeRef(vertex, vFileSize));
+  bgfx::ShaderHandle frag = bgfx::createShader(bgfx::makeRef(fragment, fFileSize));
+  bgfx::ProgramHandle program = bgfx::createProgram(vert, frag);
+
+  struct Vertex {
+    float x;
+    float y;
+    float z;
+    uint32_t abgr;
+  };
+
+  Vertex vertices[] = {
+    {-0.5f,  -0.5f,  0.5f, 0xff000000 },
+    { 0.5f,  -0.5f,  0.5f, 0xff0000ff },
+    { 0.5f, 0.5f,  0.5f, 0xff00ff00 },
+    { -0.5f, 0.5f,  0.5f, 0xff00ffff },
+    {-0.5f,  -0.5f, -0.5f, 0xffff0000 },
+    { 0.5f,  -0.5f, -0.5f, 0xffff00ff },
+    { 0.5f, 0.5f, -0.5f, 0xffffff00 },
+    { -0.5f, 0.75f, -0.5f, 0xffffffff },
+  };
+
+  uint16_t indices[] {
+    0, 1, 2,
+    0, 2, 3,
+    1, 5, 6,
+    1, 6, 2,
+    5, 4, 7,
+    5, 7, 6,
+    4, 0, 3,
+    4, 3, 7,
+    3, 2, 6,
+    3, 6, 7,
+    4, 5, 1,
+    4, 1, 0
+  };
+
+  bgfx::VertexBufferHandle vertexBuffer = bgfx::createVertexBuffer(bgfx::makeRef(vertices, sizeof(vertices)), vertexLayout);
+  bgfx::IndexBufferHandle indexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(indices, sizeof(indices)));
+
+  while (!glfwWindowShouldClose(window)) {
+    glfwPollEvents();
+
+    bgfx::setDebug((debugText ? BGFX_DEBUG_TEXT : 0) | (debugWireframe ? BGFX_DEBUG_WIREFRAME : 0));
+
+    bgfx::touch(clearView);
+
+    bgfx::setState(BGFX_STATE_WRITE_R | BGFX_STATE_WRITE_G | BGFX_STATE_WRITE_B | BGFX_STATE_WRITE_A);
+    bgfx::setVertexBuffer(0, vertexBuffer);
+    bgfx::setIndexBuffer(indexBuffer);
+    bgfx::submit(clearView, program);
+
+    bgfx::dbgTextClear();
+    bgfx::dbgTextPrintf(0, 0, 0x0f, "Frame Count: %i", frameNumber);
+
+    bgfx::frame();
+
+    frameNumber++;
+  }
+
+  delete[] fragment;
+  delete[] vertex;
+
+  bgfx::destroy(vert);
+  bgfx::destroy(frag);
+  bgfx::destroy(program);
+  bgfx::destroy(indexBuffer);
+  bgfx::destroy(vertexBuffer);
+  bgfx::shutdown();
+  glfwTerminate();
+
+  return 0;
+}
+
+void KeyCallback(GLFWwindow * window, int key, int scancode, int action, int mods) {
+  if (action == GLFW_PRESS) {
+    switch (key) {
+    case GLFW_KEY_F1:
+      debugWireframe = !debugWireframe;
+      break;
+
+    case GLFW_KEY_ESCAPE:
+      glfwSetWindowShouldClose(window, true);
+      break;
+    }
+  }
+}

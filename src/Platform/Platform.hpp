@@ -1,0 +1,9 @@
+#pragma once
+
+#if BX_PLATFORM_LINUX
+#define PLATFORM_LINUX
+#elif BX_PLATFORM_OSX
+#define PLATFORM_OSX
+#elif BX_PLATFORM_WINDOWS
+#define PLATFORM_WINDOWS
+#endif
