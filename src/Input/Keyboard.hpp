@@ -7,7 +7,7 @@
 class Keyboard {
 public:
   enum KeyState {
-    None,
+    NoState,
     Down,
     Up
   };

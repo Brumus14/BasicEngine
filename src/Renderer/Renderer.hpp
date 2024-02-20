@@ -1,12 +1,16 @@
 #pragma once
 
-#include "Window/Window.hpp"
+#include <bgfx/bgfx.h>
+#include "Window/RenderWindow.hpp"
 
 class Renderer {
 public:
-  Renderer(Window * window);
+  Renderer(RenderWindow * window);
   ~Renderer();
 
 private:
-  Window * window;
+  RenderWindow * window;
+
+  //TODO manage views better
+  bgfx::ViewId view;
 };

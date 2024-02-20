@@ -5,7 +5,7 @@
 void Keyboard::UpdateKeyStates() {
   for (auto & [key, data] : keys) {
     if (data.state == KeyState::Down || data.state == KeyState::Up) {
-      data.state = KeyState::None;
+      data.state = KeyState::NoState;
     }
   }
 }

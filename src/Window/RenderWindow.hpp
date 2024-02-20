@@ -1,20 +1,26 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
+#include <bgfx/platform.h>
 #include <glm/glm.hpp>
 #include <string>
 #include "Input/Input.hpp"
 
-class Window {
+class RenderWindow {
 public:
-  Window(unsigned int width, unsigned int height, std::string title, Input * input);
-  ~Window();
+  RenderWindow(unsigned int width, unsigned int height, std::string title, Input * input);
+  ~RenderWindow();
 
   void PollEvents();
+
+  //TODO move into platform code / class
+  bgfx::PlatformData GetPlatformData();
 
   //TODO Manage  quitting globally instead of the window?
   bool ShouldQuit();
   void Quit();
+
+  glm::tvec2<unsigned int> GetSize();
 
 private:
   GLFWwindow * window = nullptr;
