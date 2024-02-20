@@ -20,25 +20,40 @@ Renderer::Renderer(RenderWindow * window) : window(window) {
   bgfxInit.resolution.height = window->GetSize().y;
   bgfxInit.resolution.reset = BGFX_RESET_VSYNC;
 
-  //TODO More dynamic backends will need to be implemented with shaders
+  //TODO More dynamic backends, will need to be implemented with shader platform compilation
   bgfxInit.type = bgfx::RendererType::OpenGL;
 
   bgfx::init(bgfxInit);
+
+  //TODO this doesn't seem very dynamic for multiple renderers
+  view = 0;
+  bgfx::setViewClear(view, BGFX_CLEAR_COLOR);
+  bgfx::setViewRect(view, 0, 0, window->GetSize().x, window->GetSize().y);
 }
 
 Renderer::~Renderer() {
   bgfx::shutdown();
 }
 
-void Renderer::Render() {
-  bgfx::touch(view);
-
+void Renderer::RenderBegin() {
   bgfx::setDebug(BGFX_DEBUG_TEXT);
 
-  bgfx::setState(BGFX_STATE_WRITE_R | BGFX_STATE_WRITE_G | BGFX_STATE_WRITE_B | BGFX_STATE_WRITE_A);
+  bgfx::touch(view);
 
+  //TODO temp text
   bgfx::dbgTextClear();
   bgfx::dbgTextPrintf(0, 0, 0x0f, "Hello, World!");
+}
 
+//TODO implement default shader program
+//TODO implement batch rendering where multiple submitted at once
+void Renderer::Render(bgfx::VertexBufferHandle vertexBuffer, bgfx::IndexBufferHandle indexBuffer, ShaderProgram * shaderProgram) {
+  bgfx::setState(BGFX_STATE_WRITE_R | BGFX_STATE_WRITE_G | BGFX_STATE_WRITE_B | BGFX_STATE_WRITE_A);
+  bgfx::setVertexBuffer(0, vertexBuffer);
+  bgfx::setIndexBuffer(indexBuffer);
+  bgfx::submit(view, shaderProgram->GetHandle());
+}
+
+void Renderer::RenderEnd() {
   bgfx::frame();
 }

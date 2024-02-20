@@ -51,7 +51,7 @@ int main (int argc, char * argv[]) {
 
   std::ifstream is;
 
-  is.open("/home/brumus/Documents/Code/C++/BGFX/Testing/res/shaders/vs_basic.bin", std::ios::binary);
+  is.open("/home/brumus/Documents/Code/C++/BGFX/BasicEngine/res/shaders/vs_basic.bin", std::ios::binary);
 
   is.seekg(0, std::ios::end);
   std::streampos vFileSize = is.tellg();
@@ -62,7 +62,7 @@ int main (int argc, char * argv[]) {
 
   is.close();
 
-  is.open("/home/brumus/Documents/Code/C++/BGFX/Testing/res/shaders/fs_basic.bin", std::ios::binary);
+  is.open("/home/brumus/Documents/Code/C++/BGFX/BasicEngine/res/shaders/fs_basic.bin", std::ios::binary);
 
   is.seekg(0, std::ios::end);
   std::streampos fFileSize = is.tellg();

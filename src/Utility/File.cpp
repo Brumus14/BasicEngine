@@ -1,13 +1,17 @@
 #include "File.hpp"
 
+#include <sstream>
+
 namespace Utility {
-  std::string ReadFile(std::string path, bool binary) {
-    std::ifstream fileStream(path, std::ios::in | (binary ? std::ios::binary : 0)); //ERROR
+  //TODO More efficient algorithm and fix
+  std::string ReadFile(std::string path) {
+    std::ifstream fileStream(path, std::ios::in);
 
-    fileStream.seekg(0, std::ios::end);
-    std::streampos fileSize = fileStream.tellg();
-    fileStream.seekg(0, std::ios::beg);
+    std::ostringstream fileBuffer;
+    fileBuffer << fileStream.rdbuf();
 
-    char * fileData = new char[fileSize];
+    fileStream.close();
+
+    return fileBuffer.str();
   }
 }

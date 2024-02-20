@@ -2,13 +2,16 @@
 
 #include <bgfx/bgfx.h>
 #include "Window/RenderWindow.hpp"
+#include "ShaderProgram.hpp"
 
 class Renderer {
 public:
   Renderer(RenderWindow * window);
   ~Renderer();
 
-  void Render();
+  void RenderBegin();
+  void Render(bgfx::VertexBufferHandle vertexBuffer, bgfx::IndexBufferHandle indexBuffer, ShaderProgram * shaderProgram);
+  void RenderEnd();
 
 private:
   RenderWindow * window;
