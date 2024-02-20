@@ -14,6 +14,8 @@ int main () {
     if (input.keyboard.GetKey(GLFW_KEY_ESCAPE).state == Keyboard::KeyState::Down) {
       window.Quit();
     }
+
+    renderer.Render();
   }
 
   return 0;

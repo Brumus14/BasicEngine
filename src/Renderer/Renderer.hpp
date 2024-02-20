@@ -8,6 +8,8 @@ public:
   Renderer(RenderWindow * window);
   ~Renderer();
 
+  void Render();
+
 private:
   RenderWindow * window;
 
