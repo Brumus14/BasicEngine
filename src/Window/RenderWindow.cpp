@@ -53,7 +53,7 @@ void RenderWindow::Create() {
   }
 
   //TODO Use video mode to get monitor size to properly centre
-  glfwSetWindowPos(window, 2400, 400);
+  /* glfwSetWindowPos(window, 2400, 400); */
 
   // Associate the input pointer with the window
   glfwSetWindowUserPointer(window, input);

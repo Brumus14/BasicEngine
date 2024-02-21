@@ -3,32 +3,21 @@
 #include "Utility/File.hpp"
 #include "Renderer/Shader.hpp"
 #include "Renderer/ShaderProgram.hpp"
+#include "Renderer/ShaderUniform.hpp"
 #include <iostream>
-
-#define GLFW_EXPOSE_NATIVE_X11
-#include <GLFW/glfw3.h>
-#include <GLFW/glfw3native.h>
 
 int main () {
   Input input;
-  RenderWindow window(800, 600, "Epic Game !", &input);
+  RenderWindow window(1920, 1080, "Epic Game !", &input);
   Renderer renderer(&window);
 
+  ShaderUniform timeUniform("iTime", bgfx::UniformType::Vec4);
   Shader vertexShader("/home/brumus/Documents/Code/C++/BGFX/BasicEngine/res/shaders/vs_basic.bin");
   Shader fragmentShader("/home/brumus/Documents/Code/C++/BGFX/BasicEngine/res/shaders/fs_basic.bin");
   ShaderProgram shaderProgram(&vertexShader, &fragmentShader);
 
-  bgfx::Init bgfxInit;
-  bgfxInit.platformData = window.GetPlatformData();
-  bgfxInit.resolution.width = 800;
-  bgfxInit.resolution.height = 600;
-  bgfxInit.resolution.reset = BGFX_RESET_VSYNC;
-  bgfxInit.type = bgfx::RendererType::OpenGL;
-  bgfx::init(bgfxInit);
-
-  bgfx::ViewId view = 0;
-  bgfx::setViewClear(view, BGFX_CLEAR_COLOR);
-  bgfx::setViewRect(0, 0, 0, 800, 600);
+  float deltaTime = 0;
+  float runTime = 0;
 
   bgfx::VertexLayout vertexLayout;
   vertexLayout.begin().add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float).add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true).end();
@@ -41,7 +30,7 @@ int main () {
   };
 
   Vertex vertices[] = {
-    {-1.0f,  -1.0f,  0.0f, 0xff000000 },
+    { -1.0f,  -1.0f,  0.0f, 0xff000000 },
     { 1.0f,  -1.0f,  0.0f, 0xffffffff },
     { 1.0f, 1.0f,  0.0f, 0xffffffff },
     { -1.0f, 1.0f,  0.0f, 0xff000000 },
@@ -62,6 +51,17 @@ int main () {
     if (input.keyboard.GetKey(GLFW_KEY_ESCAPE).state == Keyboard::KeyState::Down) {
       window.Quit();
     }
+
+    //TODO more precise delta time calculation with timer utility class
+    deltaTime = static_cast<float>(bgfx::getStats()->cpuTimeFrame) / static_cast<float>(bgfx::getStats()->cpuTimerFreq);
+    runTime += deltaTime;
+
+    float timeUniformValue[4] = { 0.0, 0.0, 0.0, 0.0 };
+    timeUniformValue[0] = runTime;
+    timeUniform.Set(timeUniformValue);
+
+    //TODO display fps in debug text
+    std::cout << 1 / deltaTime << std::endl;
 
     renderer.RenderBegin();
     renderer.Render(vertexBuffer, indexBuffer, &shaderProgram);
