@@ -39,21 +39,25 @@ void Renderer::RenderBegin() {
   bgfx::setDebug(BGFX_DEBUG_TEXT);
 
   bgfx::touch(view);
-
-  //TODO temp text
-  bgfx::dbgTextClear();
-  bgfx::dbgTextPrintf(0, 0, 0x0f, "Hello, World!");
 }
 
+//TODO set orthographic / perspective / no projection
+//TODO remove temp parameter
 //TODO implement default shader program
 //TODO implement batch rendering where multiple submitted at once
-void Renderer::Render(bgfx::VertexBufferHandle vertexBuffer, bgfx::IndexBufferHandle indexBuffer, ShaderProgram * shaderProgram) {
+void Renderer::Render(bgfx::VertexBufferHandle vertexBuffer, bgfx::IndexBufferHandle indexBuffer, ShaderProgram * shaderProgram, float runTime) {
   bgfx::setState(BGFX_STATE_WRITE_R | BGFX_STATE_WRITE_G | BGFX_STATE_WRITE_B | BGFX_STATE_WRITE_A);
   bgfx::setVertexBuffer(0, vertexBuffer);
   bgfx::setIndexBuffer(indexBuffer);
+
+  //TODO temp text
+  bgfx::dbgTextClear();
+  bgfx::dbgTextPrintf(0, 1, 0x0f, "Run Time: %f", runTime);
+
   bgfx::submit(view, shaderProgram->GetHandle());
 }
 
+//TODO option to render to a texture so a shader can be applied to whole screen
 void Renderer::RenderEnd() {
   bgfx::frame();
 }

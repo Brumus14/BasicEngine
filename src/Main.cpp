@@ -4,6 +4,7 @@
 #include "Renderer/Shader.hpp"
 #include "Renderer/ShaderProgram.hpp"
 #include "Renderer/ShaderUniform.hpp"
+#include <glm/ext.hpp>
 #include <iostream>
 
 int main () {
@@ -30,10 +31,10 @@ int main () {
   };
 
   Vertex vertices[] = {
-    { -1.0f,  -1.0f,  0.0f, 0xff000000 },
-    { 1.0f,  -1.0f,  0.0f, 0xffffffff },
-    { 1.0f, 1.0f,  0.0f, 0xffffffff },
-    { -1.0f, 1.0f,  0.0f, 0xff000000 },
+    { -0.5f,  -0.5f,  0.0f, 0xff000000 },
+    { 0.5f,  -0.5f,  0.0f, 0xffffffff },
+    { 0.5f, 0.5f,  0.0f, 0xffffffff },
+    { -0.5f, 0.5f,  0.0f, 0xff000000 },
   };
 
   uint16_t indices[] {
@@ -43,6 +44,16 @@ int main () {
 
   bgfx::VertexBufferHandle vertexBuffer = bgfx::createVertexBuffer(bgfx::makeRef(vertices, sizeof(vertices)), vertexLayout);
   bgfx::IndexBufferHandle indexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(indices, sizeof(indices)));
+
+  glm::mat4 perspectiveMatrix = glm::perspectiveFov(glm::radians(90.0f), (float)window.GetSize().x, (float)window.GetSize().y, 0.1f, 100.0f);
+
+  for (int y = 0; y < 4; y++) {
+    for (int x = 0; x < 4; x++) {
+      std::cout << perspectiveMatrix[y][x] << " , ";
+    }
+
+    std::cout << std::endl;
+  }
 
   while (!window.ShouldQuit()) {
     input.keyboard.UpdateKeyStates();
@@ -61,10 +72,10 @@ int main () {
     timeUniform.Set(timeUniformValue);
 
     //TODO display fps in debug text
-    std::cout << 1 / deltaTime << std::endl;
+    /* std::cout << 1 / deltaTime << std::endl; */
 
     renderer.RenderBegin();
-    renderer.Render(vertexBuffer, indexBuffer, &shaderProgram);
+    renderer.Render(vertexBuffer, indexBuffer, &shaderProgram, runTime);
     renderer.RenderEnd();
   }
 

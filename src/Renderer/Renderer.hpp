@@ -10,7 +10,7 @@ public:
   ~Renderer();
 
   void RenderBegin();
-  void Render(bgfx::VertexBufferHandle vertexBuffer, bgfx::IndexBufferHandle indexBuffer, ShaderProgram * shaderProgram);
+  void Render(bgfx::VertexBufferHandle vertexBuffer, bgfx::IndexBufferHandle indexBuffer, ShaderProgram * shaderProgram, float runTime);
   void RenderEnd();
 
 private:
