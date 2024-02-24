@@ -46,7 +46,8 @@ void Renderer::RenderBegin() {
 //TODO implement default shader program
 //TODO implement batch rendering where multiple submitted at once
 void Renderer::Render(bgfx::VertexBufferHandle vertexBuffer, bgfx::IndexBufferHandle indexBuffer, ShaderProgram * shaderProgram, float runTime) {
-  bgfx::setState(BGFX_STATE_WRITE_R | BGFX_STATE_WRITE_G | BGFX_STATE_WRITE_B | BGFX_STATE_WRITE_A);
+  bgfx::setState(BGFX_STATE_WRITE_R | BGFX_STATE_WRITE_G | BGFX_STATE_WRITE_B | BGFX_STATE_WRITE_A | BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_CULL_CW);
+  bgfx::setViewClear(view, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH);
   bgfx::setVertexBuffer(0, vertexBuffer);
   bgfx::setIndexBuffer(indexBuffer);
 
