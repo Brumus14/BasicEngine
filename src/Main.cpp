@@ -5,6 +5,9 @@
 #include "Renderer/ShaderProgram.hpp"
 #include "Renderer/ShaderUniform.hpp"
 #include "Renderer/Mesh.hpp"
+#include "Renderer/VertexBuffer.hpp"
+#include "Renderer/IndexBuffer.hpp"
+
 #include <glm/ext.hpp>
 #include <iostream>
 
@@ -33,37 +36,62 @@ int main () {
   /*   uint32_t colour; */
   /* }; */
 
-  struct Vertex {
-    float x;
-    float y;
-    float z;
-  };
+  /* struct Vertex { */
+  /*   float x; */
+  /*   float y; */
+  /*   float z; */
+  /* }; */
+
+
+
+  /* std::vector<Vertex> vertices = { */
+  /*   { -0.5f, -0.5f, 0.0f }, */
+  /*   { 0.5f, -0.5f, 0.0f }, */
+  /*   { 0.0f, 0.5f, 0.0f } */
+  /* }; */
+  /**/
+  /* std::vector<uint16_t> indices = { */
+  /*   0, 1, 2 */
+  /* }; */
+  /**/
+  /* std::vector<float> textureCoords = { */
+  /*   0.0f, 0.0f, */
+  /*   1.0f, 0.0f, */
+  /*   0.5f, 1.0f */
+  /* }; */
 
 
   std::vector<Vertex> vertices = {
-    { -0.5f, -0.5f, 0.0f },
-    { 0.5f, -0.5f, 0.0f },
-    { 0.0f, 0.5f, 0.0f }
+    { -0.5f,  -0.5f,  0.5f },
+    { 0.5f,  -0.5f,  0.5f },
+    { 0.5f, 0.5f,  0.5f },
+    { -0.5f, 0.5f,  0.5f },
+    { -0.5f,  -0.5f, -0.5f },
+    { 0.5f,  -0.5f, -0.5f },
+    { 0.5f, 0.5f, -0.5f },
+    { -0.5f, 0.5f, -0.5f }
   };
 
   std::vector<uint16_t> indices = {
-    0, 1, 2
+    0, 1, 2,
+    0, 2, 3,
+    1, 5, 6,
+    1, 6, 2,
+    5, 4, 7,
+    5, 7, 6,
+    4, 0, 3,
+    4, 3, 7,
+    3, 2, 6,
+    3, 6, 7,
+    4, 5, 1,
+    4, 1, 0
   };
 
-  std::vector<float> textureCoords = {
-    0.0f, 0.0f,
-    1.0f, 0.0f,
-    0.5f, 1.0f
-  };
 
+  VertexBuffer vertexBuffer(vertices);
+  IndexBuffer indexBuffer(indices);
 
-
-  bgfx::VertexLayout vertexLayout;
-  vertexLayout.begin().add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float).end();
-  bgfx::VertexBufferHandle vertexBuffer = bgfx::createVertexBuffer(bgfx::makeRef(vertices.data(), vertices.size() * sizeof(Vertex)), vertexLayout);
-  bgfx::IndexBufferHandle indexBuffer = bgfx::createIndexBuffer(bgfx::makeRef(indices.data(), indices.size() * sizeof(uint16_t)));
-
-  glm::mat4 model = glm::mat4(1.0f);
+  glm::vec3 camPos(0.0f);
 
   while (!window.ShouldQuit()) {
     input.keyboard.UpdateKeyStates();
@@ -71,6 +99,30 @@ int main () {
 
     if (input.keyboard.GetKey(GLFW_KEY_ESCAPE).state == Keyboard::KeyState::Down) {
       window.Quit();
+    }
+
+    if (input.keyboard.GetKey(GLFW_KEY_A).pressed) {
+      camPos.x += 2.0f * deltaTime;
+    }
+
+    if (input.keyboard.GetKey(GLFW_KEY_D).pressed) {
+      camPos.x -= 2.0f * deltaTime;
+    }
+
+    if (input.keyboard.GetKey(GLFW_KEY_SPACE).pressed) {
+      camPos.y += 2.0f * deltaTime;
+    }
+
+    if (input.keyboard.GetKey(GLFW_KEY_LEFT_SHIFT).pressed) {
+      camPos.y -= 2.0f * deltaTime;
+    }
+
+    if (input.keyboard.GetKey(GLFW_KEY_W).pressed) {
+      camPos.z += 2.0f * deltaTime;
+    }
+
+    if (input.keyboard.GetKey(GLFW_KEY_S).pressed) {
+      camPos.z -= 2.0f * deltaTime;
     }
 
     //TODO more precise delta time calculation with timer utility class
@@ -82,7 +134,7 @@ int main () {
     timeUniform.Set(timeUniformValue);
 
     glm::mat4 view = glm::mat4(1.0f);
-    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+    view = glm::lookAt(camPos, camPos + glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     viewUniform.Set(glm::value_ptr(view));
 
     glm::mat4 projection;
@@ -94,8 +146,11 @@ int main () {
 
     renderer.RenderBegin();
 
+    glm::mat4 model = glm::mat4(1.0f);
+    /* model = glm::translate(model, glm::vec3(std::sin(runTime), std::cos(runTime), -5.0f)); */
+    /* model = glm::rotate(model, runTime * glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f)); */
     modelUniform.Set(glm::value_ptr(model));
-    renderer.Render(vertexBuffer, indexBuffer, &shaderProgram, runTime);
+    renderer.Render(vertexBuffer.GetHandle(), indexBuffer.GetHandle(), &shaderProgram, runTime);
 
     /* model = glm::mat4(1.0f); */
     /* model = glm::rotate(model, runTime * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f)); */

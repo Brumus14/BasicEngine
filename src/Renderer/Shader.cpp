@@ -16,6 +16,7 @@ Shader::~Shader() {
 
 bgfx::ShaderHandle Shader::GetHandle() { return handle; }
 
+//TODO could break if file data reference is removed
 //TODO const string ref parameter
 //TODO use a read file function instead of directly reading
 void Shader::LoadShaderFromFile(std::string path) {
