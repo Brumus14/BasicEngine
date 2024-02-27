@@ -1,5 +1,6 @@
 #pragma once
 
+#include <GLFW/glfw3.h>
 #include <unordered_map>
 
 // Rework to abstract GLFW key codes
@@ -17,11 +18,18 @@ public:
     KeyState state;
   };
 
+  Keyboard(GLFWwindow * window);
+  ~Keyboard();
+
   void UpdateKeyStates();
 
   KeyData GetKey(int key);
-  void SetKey(int key, KeyData data);
+  void UpdateKey(int key, KeyData data);
 
 private:
+  GLFWwindow * window;
+
   std::unordered_map<int, KeyData> keys;
+
+  static void KeyCallback(GLFWwindow * window, int key, int scancode, int action, int mods);
 };

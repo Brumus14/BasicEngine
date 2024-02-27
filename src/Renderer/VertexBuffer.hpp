@@ -1,6 +1,7 @@
 #pragma once
 
 #include <bgfx/bgfx.h>
+#include <glm/glm.hpp>
 #include <vector>
 
 //TODO is global struct ok?
@@ -8,6 +9,7 @@
 struct Vertex {
   /* glm::vec3 position; */
   float x, y, z;
+  int16_t texCoordX, texCoordY;
   /* uint32_t colour; */
 };
 

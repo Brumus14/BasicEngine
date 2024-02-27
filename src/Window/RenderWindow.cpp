@@ -7,7 +7,7 @@
 #include "Input/Keyboard.hpp"
 #include <iostream>
 
-RenderWindow::RenderWindow(unsigned int width, unsigned int height, std::string title, Input * input) : size(width, height), title(title), input(input) {
+RenderWindow::RenderWindow(unsigned int width, unsigned int height, std::string title) : size(width, height), title(title) {
   Initialise();
   Create();
 }
@@ -21,6 +21,8 @@ void RenderWindow::PollEvents() {
 
   shouldQuit = glfwWindowShouldClose(window);
 }
+
+GLFWwindow * RenderWindow::GetGLFWWindow() { return window; }
 
 bgfx::PlatformData RenderWindow::GetPlatformData() {
   bgfx::PlatformData platformData;
@@ -56,9 +58,9 @@ void RenderWindow::Create() {
   /* glfwSetWindowPos(window, 2400, 400); */
 
   // Associate the input pointer with the window
-  glfwSetWindowUserPointer(window, input);
-
-  glfwSetKeyCallback(window, KeyCallback);
+  /* glfwSetWindowUserPointer(window, input); */
+  /**/
+  /* glfwSetKeyCallback(window, KeyCallback); */
 }
 
 void RenderWindow::Destroy() {
@@ -66,23 +68,23 @@ void RenderWindow::Destroy() {
   glfwTerminate();
 }
 
-void RenderWindow::KeyCallback(GLFWwindow * window, int key, int scancode, int action, int mods) {
-  if (action == GLFW_REPEAT) { return; }
-
-  //TODO Account for that user pointer may not always be the input
-  Input * input = reinterpret_cast<Input*>(glfwGetWindowUserPointer(window));
-
-  Keyboard::KeyData oldData = input->keyboard.GetKey(key);
-
-  Keyboard::KeyData data = { action == GLFW_PRESS, Keyboard::KeyState::NoState };
-
-  if (!oldData.pressed && data.pressed) {
-    data.state = Keyboard::KeyState::Down;
-  }
-
-  else if (oldData.pressed && !data.pressed) {
-    data.state = Keyboard::KeyState::Up;
-  }
-
-  input->keyboard.SetKey(key, data);
-}
+/* void RenderWindow::KeyCallback(GLFWwindow * window, int key, int scancode, int action, int mods) { */
+/*   if (action == GLFW_REPEAT) { return; } */
+/**/
+/*   //TODO Account for that user pointer may not always be the input */
+/*   Input * input = reinterpret_cast<Input*>(glfwGetWindowUserPointer(window)); */
+/**/
+/*   Keyboard::KeyData oldData = input->keyboard.GetKey(key); */
+/**/
+/*   Keyboard::KeyData data = { action == GLFW_PRESS, Keyboard::KeyState::NoState }; */
+/**/
+/*   if (!oldData.pressed && data.pressed) { */
+/*     data.state = Keyboard::KeyState::Down; */
+/*   } */
+/**/
+/*   else if (oldData.pressed && !data.pressed) { */
+/*     data.state = Keyboard::KeyState::Up; */
+/*   } */
+/**/
+/*   input->keyboard.SetKey(key, data); */
+/* } */

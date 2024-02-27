@@ -8,10 +8,12 @@
 
 class RenderWindow {
 public:
-  RenderWindow(unsigned int width, unsigned int height, std::string title, Input * input);
+  RenderWindow(unsigned int width, unsigned int height, std::string title);
   ~RenderWindow();
 
   void PollEvents();
+
+  GLFWwindow * GetGLFWWindow();
 
   //TODO move into platform code / class
   bgfx::PlatformData GetPlatformData();
@@ -26,7 +28,6 @@ private:
   GLFWwindow * window = nullptr;
   glm::tvec2<unsigned int> size;
   std::string title;
-  Input * input;
 
   bool shouldQuit = false;
 
@@ -34,5 +35,6 @@ private:
   void Create();
   void Destroy();
 
-  static void KeyCallback(GLFWwindow * window, int key, int scancode, int action, int mods);
+  //TODO maybe separate into keyboard class
+  /* static void KeyCallback(GLFWwindow * window, int key, int scancode, int action, int mods); */
 };
