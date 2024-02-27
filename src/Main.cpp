@@ -30,9 +30,9 @@ int main() {
   Camera camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, -1.0f), &window, &viewUniform, &projectionUniform);
 
   int width, height, channels;
-  unsigned char * data = stbi_load("/home/brumus/Documents/Code/C++/BGFX/BasicEngine/res/Textures/blocks.png", &width, &height, &channels, STBI_rgb_alpha);
+  unsigned char * data = stbi_load("/home/brumus/Documents/Code/C++/BGFX/BasicEngine/res/Textures/blocks.png", &width, &height, &channels, STBI_rgb);
   if (data == NULL) { std::cout << "\n\n\n\n\n\n\n\n\nERROR LOADING IMAGE\n\n\n\n\n\n\n\n\n" << std::endl; }
-  bgfx::TextureHandle textureHandle = bgfx::createTexture2D(width, height, false, 1, bgfx::TextureFormat::RGBA8, BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT, bgfx::makeRef(data, width * height * 4));
+  bgfx::TextureHandle textureHandle = bgfx::createTexture2D(width, height, false, 1, bgfx::TextureFormat::RGB8, BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT, bgfx::makeRef(data, width * height * 3));
 
   ShaderUniform textureUniform("s_tex", bgfx::UniformType::Sampler);
 
@@ -48,10 +48,10 @@ int main() {
     /* { 0.5f, -0.5f, -0.5f, { 1.0f, 0.0f } }, */
     /* { 0.5f, 0.5f, -0.5f, { 0.0f, 1.0f } }, */
     /* { -0.5f, 0.5f, -0.5f, { 1.0f, 1.0f } } */
-    { 0.5f, 0.5f, 0.0f, 0, 0 },
-    { 0.5f, -0.5f, 0.0f, 0x7fff, 0 },
-    { -0.5f, -0.5f, 0.0f, 0, 0x7fff },
-    { -0.5f, 0.5f, 0.0f, 0x7fff, 0x7fff },
+    { 0.5f, 0.5f, 0.0f, INT16_MAX, 0 },
+    { 0.5f, -0.5f, 0.0f, INT16_MAX, INT16_MAX },
+    { -0.5f, -0.5f, 0.0f, 0, INT16_MAX },
+    { -0.5f, 0.5f, 0.0f, 0, 0 },
   };
 
   std::vector<uint16_t> indices = {

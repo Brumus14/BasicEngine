@@ -1,5 +1,5 @@
-$input a_position, a_color0, a_texCoord0
-$output v_position, v_color0, v_texCoord0
+$input a_position, a_color0, a_texcoord0
+$output v_position, v_color0, v_texcoord0
 
 
 uniform mat4 model;
@@ -16,5 +16,5 @@ void main() {
 
   v_position = a_position;
 	v_color0 = a_color0;
-  v_texCoord0 = a_texCoord0;
+  v_texcoord0 = a_texcoord0;
 }
